@@ -4,7 +4,7 @@
 $gmclient= new GearmanClient();
 
 # Указание сервера по умолчанию (localhost).
-$gmclient->addServer();
+$gmclient->addServer('localhost', 4730);
 
 echo "Sending job\n";
 

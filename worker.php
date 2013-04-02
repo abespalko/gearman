@@ -6,7 +6,7 @@ echo "Starting\n";
 $gmworker= new GearmanWorker();
 
 # Добавление сервера по умолчанию (localhost).
-$gmworker->addServer();
+$gmworker->addServer('localhost', 4730);
 
 # Регистрация функции "reverse" на сервере. Изменение функции обработчика на
 # "reverse_fn_fast" для более быстрой обработки без вывода.
