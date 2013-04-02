@@ -27,6 +27,7 @@ do
       echo "Failed\n";
       exit;
     case GEARMAN_SUCCESS:
+        echo $result;
       break;
     default:
       echo "RET: " . $gmclient->returnCode() . "\n";

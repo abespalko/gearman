@@ -10,7 +10,7 @@ $gmworker->addServer('localhost', 4730);
 
 # Регистрация функции "reverse" на сервере. Изменение функции обработчика на
 # "reverse_fn_fast" для более быстрой обработки без вывода.
-$gmworker->addFunction("reverse", "reverse_fn");
+$gmworker->addFunction("ordersSimul", "ordersSimul");
 
 print "Waiting for job...\n";
 while($gmworker->work())
@@ -24,6 +24,7 @@ while($gmworker->work())
 	}
 	$stop_profiler = round((microtime(true) - $start_profiler));
 	echo $stop_profiler . ' seconds elapsed for tast: ';
+   // die();
 }
 
 function reverse_fn($job)
@@ -63,7 +64,7 @@ function ordersSimul() {
 		// Do manipulation with order
 		sleep(1);
 	}
-
+    return 'Order convertered.';
 }
 
 function getOrders() {
