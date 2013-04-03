@@ -1,9 +1,9 @@
 <?php
-
-echo "Starting\n";
+header("Content-Type: text/html");
+echo "Starting..\n";
 
 # Создание нового обработчика.
-$gmworker= new GearmanWorker();
+$gmworker = new GearmanWorker();
 
 # Добавление сервера по умолчанию (localhost).
 $gmworker->addServer('localhost', 4730);
@@ -15,11 +15,15 @@ $gmworker->addFunction("reverse", "reverse_fn");
 print "Waiting for job...\n";
 while($gmworker->work())
 {
-  if ($gmworker->returnCode() != GEARMAN_SUCCESS)
-  {
-    echo "return_code: " . $gmworker->returnCode() . "\n";
-    break;
-  }
+	print "New task found.. Starting work...\n";
+	$start_profiler = microtime(true);
+	if ($gmworker->returnCode() != GEARMAN_SUCCESS)
+	{
+		print "return_code: " . $gmworker->returnCode() . "\n";
+		break;
+	}
+	$stop_profiler = round((microtime(true) - $start_profiler));
+	echo $stop_profiler . ' seconds elapsed for tast: ';
 }
 
 function reverse_fn($job)
@@ -50,4 +54,30 @@ function reverse_fn($job)
 function reverse_fn_fast($job)
 {
   return strrev($job->workload());
+}
+
+function ordersSimul() {
+
+	$orders = getOrders();
+	foreach ($orders as $order) {
+		// Do manipulation with order
+		sleep(1);
+	}
+
+}
+
+function getOrders() {
+	//$mysqli = mysqli_connect('localhost', 'root', '', 'gearman');
+	//$query = 'SELECT * FROM orders';
+	//$result = mysqli_query($mysqli, $query);
+	//$orders = mysqli_fetch_assoc($result);
+	$orders = array_fill(0, 5, generateRandomString(10));
+
+	return $orders;
+}
+
+
+function generateRandomString($length = 10) {
+	//return $random = substr(md5(rand()),0,7);
+	return substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, $length);
 }

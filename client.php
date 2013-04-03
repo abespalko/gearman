@@ -11,7 +11,7 @@ echo "Sending job\n";
 # Отправка задания обратно
 do
 {
-  $result = $gmclient->do("reverse", "Hello!");
+  $result = $gmclient->doBackground("ordersSimul", "Hello!");
 
   # Проверка на различные возвращаемые пакеты и ошибки.
   switch($gmclient->returnCode())
@@ -34,3 +34,19 @@ do
   }
 }
 while($gmclient->returnCode() != GEARMAN_SUCCESS);
+
+
+
+function getOrder() {
+	//$mysqli = mysqli_connect('localhost', 'root', '', 'gearman');
+	//$query = 'SELECT * FROM orders';
+	//$result = mysqli_query($mysqli, $query);
+	//$orders = mysqli_fetch_assoc($result);
+	$order = generateRandomString(10);
+	return $order;
+}
+
+function generateRandomString($length = 10) {
+	//return $random = substr(md5(rand()),0,7);
+	return substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, $length);
+}
