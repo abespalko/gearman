@@ -27,16 +27,16 @@ while($gmworker->work())
 function ordersSimul($job)
 {
 
-    print "New task found: ".__FUNCTION__.".\nStarting work...\n\n";
+    print "New task found: " . __FUNCTION__ . ".\nStarting work...\n\n";
     $orders = $job->workload();
     $orders = unserialize($orders);
     $totalMails = 50;
 
     // Do manipulation with order
-    for ($sentMail=0; $sentMail<=$totalMails; $sentMail++) {
+    /*for ($sentMail=0; $sentMail<=$totalMails; $sentMail++) {
         usleep(100000);
         $job->sendStatus($sentMail, $totalMails);
-    }
+    }*/
 
     return 'Orders convertered:' . $orders;
 }

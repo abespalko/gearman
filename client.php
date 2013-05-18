@@ -1,34 +1,32 @@
 <?php
+header('Content-Type: text/html; charset=utf-8');
+include_once "client_form.php";
 
-$mysqli = mysqli_connect('localhost', 'root', '', 'gearman');
 # Создание клиентского объекта
-$gmclient= new GearmanClient();
+$gmclient = new GearmanClient();
 
 # Указание сервера по умолчанию (localhost).
-$gmclient->addServer('localhost', 4730);
+//$gmclient->addServer('localhost', 4730);
 
-$gmclient->setCompleteCallback('taskCompleted');
+//$gmclient->setCompleteCallback('taskCompleted');
 
-function taskCompleted($task) {
-    echo "Task # " . $task->jobHandle() . " has been completed <br />";
+$count_jobs = 0;
+if (isset($_GET['count_jobs']) && is_numeric($_GET['count_jobs']) && $_GET['count_jobs'] != '') {
+	$count_jobs = $_GET['count_jobs'];
+	echo '<br />Sending ' . $count_jobs . ' jobs...<br />';
 }
 
-$query = 'SELECT * FROM orders';
-$result = mysqli_query($mysqli, $query);
-$i = 6;
-echo "Sending ".$i." jobs...<br />";
+
 
 $start_profiler = microtime(true);
-while ($i) {
-    $row = array($i, $i, 0);
-    $row2 = array(13131, 24242);
-    $result = $gmclient->doBackground("ordersSimul", serialize($row));
+for ($i=0; $i>=$count_jobs; $i++) {
+    $row = array($count_jobs);
+    //$result = $gmclient->doBackground("ordersSimul", serialize($row));
     //$result = $gmclient->doBackground("ordersSimul", serialize($row2));
     //$result = $gmclient->addTask("ordersSimul", serialize($row));
     //$gmclient->runTasks();
 
-
-    $i--;
+/*
     $done = false;
     do {
         usleep(500000);
@@ -38,11 +36,11 @@ while ($i) {
         }
         echo "Is Working?: " . ($stat[1] ? "true" : "false") . ", mails sent : " . $stat[2] . ", total: " . $stat[3] . "<br />";
     } while (!$done);
-
+*/
     flush();
 }
 $stop_profiler = (round((microtime(true) - $start_profiler), 3) * 1);
-echo $stop_profiler . ' seconds elapsed for sending all tasks.<br /><br />';
+echo $stop_profiler . ' seconds elapsed for sending ' . $count_jobs . ' tasks.<br /><br />';
 
 class GearmanClient
 {
@@ -63,4 +61,8 @@ function getOrder() {
 function generateRandomString($length = 10) {
 	//return $random = substr(md5(rand()),0,7);
 	return substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, $length);
+}
+
+function taskCompleted($task) {
+	echo "Task # " . $task->jobHandle() . " has been completed <br />";
 }
